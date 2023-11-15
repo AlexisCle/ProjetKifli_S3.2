@@ -1,9 +1,25 @@
+from random import randint
+
+
 def gen_pochon(n):
-    pass
+    res = []
+    i = 1
+    while len(res) < n:
+        res.append(i)
+        i = randint(i, i * 2)
+    return res
 
 
 def gen_cle_privee(n):
-    pass
+    pochon = gen_pochon(n)
+    M = sum(pochon)
+    W = randint(1, M - 1)
+    omega = []
+    while len(omega) < n:
+        i = randint(1, n)
+        if i not in omega:
+            omega.append(i)
+    return [pochon, M, W, omega]
 
 
 def gen_cle_publique(cle_privee):
