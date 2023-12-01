@@ -1,0 +1,3 @@
+import kifli
+
+kifli.main()
