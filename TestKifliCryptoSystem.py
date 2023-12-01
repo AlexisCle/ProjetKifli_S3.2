@@ -17,11 +17,25 @@ class TestKifliCryptoSystem(unittest.TestCase):
         self.assertEqual(len(cle_publique), n)
 
     def test_solve_pochon(self):
-        pochon = [2, 5, 11, 23, 55]
-        cible = 1214
+        pochon = [2, 4, 8, 16, 32, 64]
+        cible = 90
         solution = kifli.solve_pochon(pochon, cible)
+        totSol = 0
         self.assertEqual(len(solution), len(pochon))
-        self.assertEqual(sum(p * b for p, b in zip(pochon, solution)), cible)
+        for i in range(len(solution)):
+            self.assertTrue(solution[i] in [0, 1])
+            totSol += solution[i] * pochon[i]
+        self.assertEqual(totSol, cible)
+
+    def test_chiffrer_dechiffrer(self):
+        n = 8
+        cle_privee = kifli.gen_cle_privee(n)
+        cle_publique = kifli.gen_cle_publique(cle_privee)
+        message = [1, 0, 1, 1, 0, 0, 1, 1]
+        message_chiffre = kifli.chiffrer(message, cle_publique)
+        message_dechiffre = kifli.dechiffrer(message_chiffre, cle_privee)
+        self.assertEqual(message, message_dechiffre)
+
 
 
 if __name__ == '__main__':
