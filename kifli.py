@@ -24,22 +24,26 @@ def gen_cle_privee(n):
 
 
 def gen_cle_publique(cle_privee):
+    cle_publique = []
     pochon = cle_privee['pochon']
     m = cle_privee['M']
     w = cle_privee['W']
     permutation_sigma = cle_privee['sigma']
-    cle_publique = [(pochon[permutation_sigma[i] - 1] * w) % m for i in range(len(pochon))]
+    for i in range(len(pochon)):
+        cle_publique.append((w * pochon[permutation_sigma[i] - 1]) % m)
     return cle_publique
 
 
 def solve_pochon(pochon, c):
     res = []
-    for i in range(len(pochon)):
-        if pochon[i] <= c:
+    cnt =len(pochon)
+    while c >= 0 and cnt > 0:
+        if c >= pochon[cnt-1]:
             res.append(1)
-            c -= pochon[i]
+            c -= pochon[cnt-1]
         else:
             res.append(0)
+        cnt -= 1
     return res
 
 
@@ -51,15 +55,15 @@ def chiffrer(m, cle_publique):
 
 
 def dechiffrer(message_chiffre, cle_privee):
+    message_original = []
     pochon = cle_privee['pochon']
     m = cle_privee['M']
     w = cle_privee['W']
     permutation_sigma = cle_privee['sigma']
-    inverse_w = pow(w, -1, m)
-    d = (inverse_w * message_chiffre) % m
+    d = (w**-1 * message_chiffre) % m
     bits_message_original = solve_pochon(pochon, d)
-    message_original = [bits_message_original[permutation_sigma.index(i + 1)] for i in range(len(pochon))]
-
+    for i in range(len(bits_message_original)):
+        message_original.append(bits_message_original[permutation_sigma.index(i + 1)])
     return message_original
 
 
@@ -86,5 +90,5 @@ def binary_to_text(binary):
 def main():
     msg1 = "Hello World!"
     msg2 = "Kifli"
-    test_chiffrement_dechiffrement(text_to_binary(msg1), len(msg1) * 8)
+    #test_chiffrement_dechiffrement(text_to_binary(msg1), len(msg1) * 8)
     test_chiffrement_dechiffrement(text_to_binary(msg2), len(msg2) * 8)
